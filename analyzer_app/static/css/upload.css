@@ -1,0 +1,46 @@
+.upload-container {
+  background-color: #f8f9fa;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.4s ease;
+}
+
+form label {
+  font-weight: 600;
+}
+
+form input[type="file"] {
+  border: 1px solid #ced4da;
+  padding: 0.5rem;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+.tips-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.tips-list li::before {
+  content: "✔️";
+  margin-right: 8px;
+  color: green;
+}
+
+.tips-list li {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

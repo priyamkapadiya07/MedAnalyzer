@@ -1,0 +1,101 @@
+Layout
+
+.login-title {
+  font-family: "Titillium Web", sans-serif;
+  font-weight: 600;
+  font-size: 1.8rem;
+  color: #212529;
+  letter-spacing: 0.8px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.text-brand {
+  color: #0d6efd;
+  font-weight: 700;
+}
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 1rem;
+  background-color: #f5f7fa;
+}
+
+/* Card Styling */
+.login-card {
+  background-color: #ffffff;
+  color: #212529;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #dee2e6;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 20px rgba(33, 37, 41, 0.15);
+}
+
+/* Input Fields */
+.login-card input[type="text"],
+.login-card input[type="password"],
+.login-card input[type="email"] {
+  background-color: #f1f1f1;
+  border: 1px solid #ced4da;
+  color: #333;
+  padding: 10px;
+  border-radius: 6px;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.login-card input::placeholder {
+  color: #999;
+}
+
+/* Button */
+.login-card .btn-dark {
+  background-color: #212529;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.login-card .btn-dark:hover {
+  background-color: #343a40;
+}
+
+/* Signup Link */
+.signup-link {
+  color: #0d6efd;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.signup-link:hover {
+  color: #084298;
+  text-decoration: underline;
+}
+
+/* Error Message */
+.errorlist {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+/* Mobile Optimization */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .login-card h2 {
+    font-size: 1.4rem;
+  }
+  .login-title {
+    font-size: 1.4rem;
+  }
+}

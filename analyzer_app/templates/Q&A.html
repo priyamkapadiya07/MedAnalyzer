@@ -1,0 +1,369 @@
+{% extends 'base.html' %} {% block content %}
+<!-- Fullscreen Loader -->
+<div id="loader" class="d-none">
+  <div class="loader-overlay">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="text-white mt-3">Sending your question... please wait.</p>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <h2 class="text-center mb-4">❓ Frequently Asked Questions</h2>
+
+  <!-- Accordion -->
+  <div class="accordion" id="qaAccordion">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="q1">
+        <button
+          class="accordion-button"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#a1"
+          aria-expanded="false"
+          aria-controls="a1">
+          When I eat anything, then pain in my chest, so what is the reason for
+          that?
+        </button>
+      </h2>
+      <div
+        id="a1"
+        class="accordion-collapse collapse show"
+        aria-labelledby="q1"
+        data-bs-parent="#qaAccordion">
+        <div class="accordion-body">
+          Chest pain after eating could be due to acid reflux, gastritis, or
+          even esophageal spasms. In some cases, it may indicate heart-related
+          issues. It's important to consult a doctor for a proper diagnosis,
+          especially if the pain is frequent or severe.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="q2">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#a2">
+          What is a normal fasting glucose level?
+        </button>
+      </h2>
+      <div
+        id="a2"
+        class="accordion-collapse collapse"
+        data-bs-parent="#qaAccordion">
+        <div class="accordion-body">
+          A normal fasting glucose level is typically between 70 and 100 mg/dL.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="q13">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#a13">
+          What is a normal Hemoglobin level?
+        </button>
+      </h2>
+      <div
+        id="a13"
+        class="accordion-collapse collapse"
+        data-bs-parent="#qaAccordion">
+        <div class="accordion-body">
+          Normal Hemoglobin levels are typically 13.8 to 17.2 g/dL for men and
+          12.1 to 15.1 g/dL for women. Lower values may suggest anemia.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="q14">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#a14">
+          What does a high WBC (White Blood Cell) count indicate?
+        </button>
+      </h2>
+      <div
+        id="a14"
+        class="accordion-collapse collapse"
+        data-bs-parent="#qaAccordion">
+        <div class="accordion-body">
+          A high WBC count often indicates infection, inflammation, stress, or
+          immune system disorders. Further evaluation is needed for exact
+          causes.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="q15">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#a15">
+          What is considered a normal fasting blood glucose level?
+        </button>
+      </h2>
+      <div
+        id="a15"
+        class="accordion-collapse collapse"
+        data-bs-parent="#qaAccordion">
+        <div class="accordion-body">
+          A normal fasting glucose level ranges between 70 and 100 mg/dL. Levels
+          above 126 mg/dL on two separate tests indicate diabetes.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="q16">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#a16">
+          What does high cholesterol mean for my health?
+        </button>
+      </h2>
+      <div
+        id="a16"
+        class="accordion-collapse collapse"
+        data-bs-parent="#qaAccordion">
+        <div class="accordion-body">
+          High cholesterol, especially LDL (bad cholesterol), can lead to
+          blocked arteries and increase the risk of heart attack and stroke.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="q17">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#a17">
+          What does a low platelet count indicate?
+        </button>
+      </h2>
+      <div
+        id="a17"
+        class="accordion-collapse collapse"
+        data-bs-parent="#qaAccordion">
+        <div class="accordion-body">
+          A low platelet count (thrombocytopenia) can lead to bleeding disorders
+          and may be caused by infections, medications, or autoimmune diseases.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="q18">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#a18">
+          Why is urine analysis important in a medical report?
+        </button>
+      </h2>
+      <div
+        id="a18"
+        class="accordion-collapse collapse"
+        data-bs-parent="#qaAccordion">
+        <div class="accordion-body">
+          Urine tests help detect urinary tract infections, kidney disorders,
+          diabetes, and even liver problems through chemical and microscopic
+          examination.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="q19">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#a19">
+          What is ESR and what does a high value mean?
+        </button>
+      </h2>
+      <div
+        id="a19"
+        class="accordion-collapse collapse"
+        data-bs-parent="#qaAccordion">
+        <div class="accordion-body">
+          ESR (Erythrocyte Sedimentation Rate) measures inflammation. A high ESR
+          may indicate infections, autoimmune conditions, or chronic diseases.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="q20">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#a20">
+          What do SGPT and SGOT values indicate in liver function tests?
+        </button>
+      </h2>
+      <div
+        id="a20"
+        class="accordion-collapse collapse"
+        data-bs-parent="#qaAccordion">
+        <div class="accordion-body">
+          SGPT and SGOT are enzymes. Elevated levels suggest liver inflammation
+          or damage, often due to hepatitis, fatty liver, or alcohol use.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="q21">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#a21">
+          Can I understand my report without a doctor?
+        </button>
+      </h2>
+      <div
+        id="a21"
+        class="accordion-collapse collapse"
+        data-bs-parent="#qaAccordion">
+        <div class="accordion-body">
+          Tools like MedAnalyzer help explain basic values and risks, but a
+          licensed doctor should always interpret complex or critical results.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="q22">
+        <button
+          class="accordion-button collapsed"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#a22">
+          What are reference ranges and why do they matter?
+        </button>
+      </h2>
+      <div
+        id="a22"
+        class="accordion-collapse collapse"
+        data-bs-parent="#qaAccordion">
+        <div class="accordion-body">
+          Reference ranges indicate typical healthy values. Deviations may
+          signal health issues, but interpretation depends on age, gender, and
+          medical history.
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion" id="qaAccordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="q23">
+          <button
+            class="accordion-button collapsed"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#a23"
+            aria-expanded="true">
+            What does a low Hemoglobin level indicate?
+          </button>
+        </h2>
+        <div
+          id="a23"
+          class="accordion-collapse collapse"
+          data-bs-parent="#qaAccordion">
+          <div class="accordion-body">
+            It may indicate anemia, blood loss, or nutritional deficiencies like
+            iron or B12.
+          </div>
+        </div>
+      </div>
+
+      <!-- Add more accordion items as needed -->
+    </div>
+
+    <!-- User Question Form -->
+    <div class="qa-form mt-5">
+      <h4 class="mb-3">💬 Ask Your Question</h4>
+
+      {% if message %}
+      <div class="alert alert-success">{{ message }}</div>
+      {% endif %}
+
+      <form
+        method="post"
+        class="question-form"
+        id="questionForm"
+        onsubmit="showLoader()">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="name" class="form-label">Your Name</label>
+          <input
+            type="text"
+            name="name"
+            class="form-control"
+            value="{{username}}"
+            required />
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Your Email</label>
+          <input
+            type="email"
+            name="email"
+            class="form-control"
+            value="{{email}}"
+            required />
+        </div>
+        <div class="mb-3">
+          <label for="question" class="form-label">Your Question</label>
+          <textarea
+            name="question"
+            class="form-control"
+            rows="4"
+            required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Question</button>
+      </form>
+
+      <!-- Loader -->
+      {% comment %}
+      <div id="formLoader" class="text-center mt-4" style="display: none">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Sending...</span>
+        </div>
+        <p class="mt-2">Sending your question... please wait.</p>
+      </div>
+      {% endcomment %}
+
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const form = document.querySelector("form");
+          const loader = document.getElementById("loader");
+
+          form.addEventListener("submit", function () {
+            loader.classList.remove("d-none"); // Show loader
+          });
+        });
+      </script>
+    </div>
+  </div>
+</div>
+{% endblock %}

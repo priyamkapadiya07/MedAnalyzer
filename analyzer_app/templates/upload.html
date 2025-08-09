@@ -1,0 +1,33 @@
+{% extends 'base.html' %} {% block content %}
+<div class="upload-container mx-auto" style="max-width: 600px">
+  <h2 class="text-center mb-4">📤 Upload Your Medical Report</h2>
+
+  <p class="text-muted text-center mb-4">
+    Supported formats: <strong>.pdf</strong>, <strong>.jpg</strong>,
+    <strong>.png</strong>, <strong>.jpeg</strong><br />
+    Our system will extract data, predict health conditions, and suggest
+    possible treatments.
+  </p>
+
+  <form
+    method="post"
+    enctype="multipart/form-data"
+    class="p-4 shadow rounded bg-white">
+    {% csrf_token %} {{ form.as_p }}
+    <div class="d-grid gap-2 mt-3">
+      <button type="submit" class="btn btn-primary btn-lg">
+        <i class="fas fa-file-upload me-2"></i> Analyze Report
+      </button>
+    </div>
+  </form>
+
+  <div class="mt-5">
+    <h5 class="mb-3">📌 Tips for Best Accuracy:</h5>
+    <ul class="tips-list">
+      <li>Make sure your image is clear and not blurry.</li>
+      <li>Avoid uploading hand-written reports (OCR may misread them).</li>
+      <li>Use scanned or well-lit photos of lab reports.</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

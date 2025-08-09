@@ -1,0 +1,29 @@
+{% extends 'base.html' %} {% block content %}
+
+<div
+  class="container d-flex justify-content-center align-items-center"
+  style="min-height: 80vh">
+  <div
+    class="card shadow p-4 text-center"
+    style="max-width: 500px; width: 100%; border-radius: 16px">
+    <div class="card-body">
+      <div class="mb-3">
+        <i
+          class="fa-solid fa-circle-check text-success"
+          style="font-size: 3rem"></i>
+      </div>
+      <h3 class="card-title mb-3 text-success fw-bold">
+        Email Sent Successfully! 📧
+      </h3>
+      <p class="card-text fs-5 text-muted">
+        The report has been sent to
+        <strong class="text-dark">{{ email }}</strong>.
+      </p>
+      <a href="{% url 'home' %}" class="btn btn-primary mt-4 px-4 py-2">
+        <i class="fa fa-arrow-left me-2"></i> Go to Home
+      </a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

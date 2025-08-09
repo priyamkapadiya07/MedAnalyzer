@@ -1,0 +1,120 @@
+{% extends 'base.html' %} {% block content %}
+<div class="text-center">
+  <h1 class="mb-4">🧠 AI-Based Medical Report Analyzer</h1>
+  <p class="lead">
+    Upload your lab reports (PDF or Image), and our AI system will extract key
+    health values, predict potential diseases, and suggest medicines.
+  </p>
+
+  <hr class="my-4" />
+
+  <div class="row mt-5">
+    <div class="col-md-6 mb-4">
+      <div class="home-section h-100">
+        <h4>📤 Upload Report</h4>
+        <p>
+          You can upload blood test, urine test, or full body checkup reports in
+          image or PDF format.
+        </p>
+        <a href="{% url 'upload' %}" class="btn btn-primary mt-3">Upload Now</a>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="home-section h-100">
+        <h4>📂 My Report History</h4>
+        <p>
+          View previously uploaded reports and their predicted results with
+          medicine suggestions.
+        </p>
+        <a href="{% url 'reports' %}" class="btn btn-secondary mt-3"
+          >View My Reports</a
+        >
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-5" />
+
+  <!-- Doctors Section -->
+  <div class="card-wrapper mb-5">
+    <div class="card-header-custom">
+      <h3 class="section-title">👨‍⚕️ Our Recommended Doctors</h3>
+    </div>
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-4 col-sm-6">
+        <div class="doctor-card">
+          <div class="doctor-avatar">🩺</div>
+          <h5>Dr. Priya Desai</h5>
+          <p class="speciality">Cardiologist</p>
+          <p>📍 Apollo Hospital, Mumbai</p>
+          <p class="contact">📞 +91 98765 43210</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="doctor-card">
+          <div class="doctor-avatar">🔬</div>
+          <h5>Dr. Rajat Verma</h5>
+          <p class="speciality">Pathologist</p>
+          <p>📍 Fortis Lab, Delhi</p>
+          <p class="contact">📞 +91 87654 32109</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="doctor-card">
+          <div class="doctor-avatar">🥗</div>
+          <h5>Dr. Meenal Shah</h5>
+          <p class="speciality">Nutritionist</p>
+          <p>📍 Health First Clinic, Pune</p>
+          <p class="contact">📞 +91 78901 23456</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Card -->
+  <div class="card-wrapper">
+    <div class="card-header-custom">
+      <h4 class="section-title">💡 Health Metric Guide</h4>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4 col-sm-6">
+        <div class="info-card">
+          <div class="info-icon">🩸</div>
+          <h6>Hemoglobin</h6>
+          <p>
+            Low levels may indicate anemia or poor oxygen supply to tissues.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="info-card">
+          <div class="info-icon">💔</div>
+          <h6>Cholesterol</h6>
+          <p>
+            High cholesterol can increase the risk of heart disease and stroke.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="info-card">
+          <div class="info-icon">🧪</div>
+          <h6>Glucose</h6>
+          <p>Helps detect diabetes and monitor blood sugar levels.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q&A Button Section -->
+  <div class="text-center mt-5">
+    <h4 class="mb-3">❓ Got Questions?</h4>
+    <p class="fst-italic">
+      Explore common medical report queries and get expert answers.
+    </p>
+    <a href="{% url 'Q&A' %}" class="btn btn-outline-info btn-lg"
+      >Visit Q&A Section</a
+    >
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+.reports-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", sans-serif;
+}
+
+.reports-heading {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 25px;
+  color: #2c3e50;
+  position: relative;
+}
+
+.reports-heading::after {
+  content: "";
+  display: block;
+  width: 70px;
+  height: 4px;
+  background: #1abc9c;
+  margin: 8px auto 0;
+  border-radius: 4px;
+}
+
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  text-align: left;
+  background-color: #fdfdfd;
+}
+
+.styled-table thead tr {
+  background-color: #1abc9c;
+  color: #ffffff;
+}
+
+.styled-table th,
+.styled-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.styled-table tbody tr:hover {
+  background-color: #f0fefb;
+}
+
+.view-btn,
+.delete-btn {
+  display: inline-block;
+  background-color: #3498db;
+  color: #ffffff;
+  padding: 8px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.view-btn {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.view-btn:hover {
+  background-color: #357ab7;
+}
+
+.delete-btn {
+  background-color: #e94e4e;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+.no-report-msg {
+  text-align: center;
+  font-style: italic;
+  color: #888;
+  margin-top: 30px;
+}

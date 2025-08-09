@@ -1,0 +1,657 @@
+{% extends 'base.html' %}{% load markdownify %} {% block content %}
+{% load static %}
+{% comment %} <script src="{% static 'js/chatbot.js' %}"></script> {% endcomment %}
+
+<div class="chat-wrapper">
+  <div class="chat-window" id="chat-box">
+    <div
+      class="no-chat-message"
+      id="no-chat"
+      style="display: {% if chat_history %}none{% else %}block{% endif %};">
+      ✨ Ask me anything about your health to get started!
+    </div>
+
+    {% for message in chat_history %}
+    <div class="chat-message {{ message.sender }}">
+      <div class="profile-icon">
+        {% if message.sender == 'user' %}🧑🏻{% else %}✨{% endif %}
+      </div>
+      <div class="message-bubble">{{ message.text|markdownify }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <form id="chat-form" method="post" class="chat-input-form">
+    {% csrf_token %}
+    <div class="chat-input-area">
+      <button
+        type="button"
+        class="btn btn-danger btn-sm"
+        aria-label="Delete"
+        id="delete-button">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+      </button>
+      <div class="input-wrapper">
+        <input
+          type="text"
+          name="message"
+          id="message-input"
+          placeholder="Type your message..."
+          required />
+        <div class="mic-wrapper">
+          <span class="mic-icon" title="Voice Input" id="mic-icon">
+            <i class="fas fa-microphone"></i>
+          </span>
+        </div>
+      </div>
+      <button type="submit" id="send-button">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </form>
+</div>
+
+{# --- START OF NEW MODAL HTML --- #}
+<div id="confirmation-modal" class="modal-overlay">
+  <div class="modal-content">
+    <h3 class="modal-title">Clear Chat History?</h3>
+    <p class="modal-message">
+      Are you sure you want to clear the entire chat history? This action cannot
+      be undone.
+    </p>
+    <div class="modal-buttons">
+      <button id="modal-cancel" class="btn btn-secondary">Cancel</button>
+      <button id="modal-confirm" class="btn btn-danger">Clear Chat</button>
+    </div>
+  </div>
+</div>
+{# --- END OF NEW MODAL HTML --- #}
+
+<style>
+    .chat-wrapper {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 100px);
+      max-width: 900px;
+      margin: 0 auto;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #f7f7f9;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+     .chat-window {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background-color: #ffffff;
+      {% comment %} background-image: url('https://img.freepik.com/premium-vector/medical-vector-illustration-medical-seamless-pattern-background_153454-5380.jpg?semt=ais_hybrid&w=740&q=80'); {% endcomment %}
+      background-image: url('{% static "images/chatbot_bg.png" %}');
+    }
+
+
+    .no-chat-message {
+      text-align: center;
+      margin-top: 24%;
+      font-size: 1.3rem;
+      color: #666;
+      font-style: italic;
+    }
+
+    /* Message blocks */
+    .chat-message {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      max-width: 100%;
+    }
+
+    .chat-message.user {
+      flex-direction: row-reverse;
+      align-self: flex-end;
+    }
+
+    .chat-message.bot {
+      align-self: flex-start;
+    }
+
+    .message-bubble {
+      display: inline-block;
+      max-width: 100%;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      background: #e8e8e8;
+      color: #000;
+      word-wrap: break-word;
+      position: relative;
+      text-align: left;
+    }
+
+    .chat-message.user .message-bubble {
+      background: #d1e7ff;
+      border-bottom-right-radius: 4px;
+      text-align: justify;
+    }
+
+    .chat-message.bot .message-bubble {
+      background: #e8e8e8;
+      border-bottom-left-radius: 4px;
+      color: #333;
+      text-align: justify;
+    }
+
+    /* Profile icons */
+    .profile-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #9e9e9eff;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .chat-message.user .profile-icon {
+      background-color: #0d6efd;
+    }
+
+    .chat-message.bot .profile-icon {
+      background-color: #9e9e9eff;
+    }
+
+    /* Typing animation */
+    .typing-indicator {
+      font-style: italic;
+      font-size: 0.9rem;
+      color: #888;
+      padding: 4px 12px;
+    }
+
+    /* Input Area */
+    .chat-input-form {
+      border-top: 1px solid #ddd;
+      background: #fff;
+      padding: 12px 16px;
+    }
+
+    /* NEW STYLES FOR THE chat-input-area */
+
+    .chat-input-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .input-wrapper {
+      flex: 1;
+      background: #f2f2f2;
+      border-radius: 30px;
+      padding: 6px 10px;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      border: none;
+      padding: 10px 40px 10px 15px;
+      font-size: 1rem;
+      background: transparent;
+      outline: none;
+    }
+
+    #send-button {
+      background: #0d6efd;
+      border: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background 0.3s ease;
+      flex-shrink: 0;
+      padding-right: 10px;
+    }
+
+    #send-button:hover {
+      background: #0b5ed7;
+    }
+
+    #delete-button {
+      border: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background 0.3s ease;
+      flex-shrink: 0;
+      padding-right: 8px;
+    }
+
+    #delete-button:hover {
+      background: #f44141ff;
+    }
+
+    .mic-icon {
+      position: absolute;
+      right: 21px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: transparent;
+      color: #888;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: color 0.3s ease;
+    }
+
+    .mic-icon:hover {
+      color: #0d6efd;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    /* ADDED STYLES FOR THE MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      transform: scale(0.95);
+      opacity: 0;
+      transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+      pointer-events: none;
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: auto;
+      padding: 30px;
+      border: 1px solid #888;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 450px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    /* Animation class for showing the modal */
+    .modal-overlay.show .modal-content {
+      transform: scale(1);
+      opacity: 1;
+    }
+    .modal-overlay.show {
+      display: flex;
+      transform: scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-title {
+      font-size: 1.6rem;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .modal-message {
+      font-size: 1rem;
+      color: #555;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .modal-buttons .btn {
+      min-width: 100px;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    /* Mic pulse animation */
+
+    .mic-icon.listening {
+      color: #0d6efd;
+    }
+
+    .mic-icon.listening::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 40px;
+      height: 40px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background-color: rgba(13, 110, 253, 0.3);
+      animation: pulse-ring 1.2s infinite ease-out;
+      z-index: -1;
+    }
+
+    @keyframes pulse-ring {
+      0% {
+        transform: translate(-50%, -50%) scale(0.7);
+        opacity: 0.6;
+      }
+      70% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      .chat-wrapper {
+        height: calc(100vh - 80px);
+        margin: 0 10px;
+      }
+
+      .message-bubble {
+        font-size: 0.9rem;
+      }
+      .modal-content {
+        width: 95%;
+        padding: 20px;
+      }
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.0/marked.min.js"></script>
+<script>
+  const chatForm = document.getElementById("chat-form");
+  const chatBox = document.getElementById("chat-box");
+  const messageInput = document.getElementById("message-input");
+  const sendButton = document.getElementById("send-button");
+  const clearChatButton = document.getElementById("delete-button");
+
+  // Modal elements
+  const confirmationModal = document.getElementById("confirmation-modal");
+  const modalConfirmButton = document.getElementById("modal-confirm");
+  const modalCancelButton = document.getElementById("modal-cancel");
+
+  function scrollToBottom() {
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+  document.addEventListener("DOMContentLoaded", scrollToBottom);
+
+  chatForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const message = messageInput.value.trim();
+    if (!message) return;
+
+    appendMessage("user", message);
+    messageInput.value = "";
+
+    const typingIndicator = document.createElement("div");
+    typingIndicator.className = "typing-indicator";
+    typingIndicator.textContent = "✨ Bot is typing...";
+    chatBox.appendChild(typingIndicator);
+    scrollToBottom();
+
+    try {
+      const response = await fetch("{% url 'chatbot' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+        body: new URLSearchParams({ message }),
+      });
+
+      const data = await response.json();
+      typingIndicator.remove();
+      appendMessage("bot", data.reply);
+      scrollToBottom();
+    } catch (error) {
+      typingIndicator.remove();
+      appendMessage("bot", "Oops! Something went wrong.");
+    }
+  });
+
+  function appendMessage(sender, text) {
+    const noChat = document.getElementById("no-chat");
+    if (noChat) noChat.style.display = "none";
+
+    const message = document.createElement("div");
+    message.className = `chat-message ${sender}`;
+
+    const icon = document.createElement("div");
+    icon.className = "profile-icon";
+    icon.innerHTML = sender === "user" ? "🧑🏻" : "✨";
+
+    const bubble = document.createElement("div");
+    bubble.className = "message-bubble";
+    if (sender === "bot") {
+      bubble.innerHTML = marked.parse(text);
+    } else {
+      bubble.textContent = text;
+    }
+
+    message.appendChild(icon);
+    message.appendChild(bubble);
+    chatBox.appendChild(message);
+    scrollToBottom();
+  }
+
+  // Function to show the modal
+  function showModal() {
+    confirmationModal.style.display = "flex";
+    setTimeout(() => confirmationModal.classList.add("show"), 10);
+  }
+
+  function hideModal() {
+    confirmationModal.classList.remove("show");
+    confirmationModal.addEventListener("transitionend", function handler() {
+      confirmationModal.style.display = "none";
+      confirmationModal.removeEventListener("transitionend", handler);
+    });
+  }
+
+  clearChatButton.addEventListener("click", function () {
+    showModal();
+  });
+
+  modalConfirmButton.addEventListener("click", async function () {
+    hideModal();
+    try {
+      const response = await fetch("{% url 'clear_chat' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      if (data.status === "success") {
+        chatBox.innerHTML = `
+                    <div class="no-chat-message" id="no-chat">
+                        ✨ Ask me anything about your health to get started!
+                    </div>
+                `;
+        document.getElementById("no-chat").style.display = "block";
+        scrollToBottom();
+        console.log(data.message);
+      } else {
+        console.warn(data.message);
+      }
+    } catch (error) {
+      console.error("Error clearing chat:", error);
+      alert("Failed to clear chat history. Please try again.");
+    }
+  });
+
+  modalCancelButton.addEventListener("click", function () {
+    hideModal();
+  });
+
+  confirmationModal.addEventListener("click", function (event) {
+    if (event.target === confirmationModal) {
+      hideModal();
+    }
+  });
+
+  // speech script for microphone
+
+  {% comment %} const micIcon = document.getElementById("mic-icon");
+
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (SpeechRecognition) {
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+
+    micIcon.addEventListener("click", () => {
+      finalTranscript = "";
+      recognition.start();
+      micIcon.classList.add("listening");
+    });
+
+    let finalTranscript = "";
+
+    recognition.onresult = (event) => {
+      let interimTranscript = "";
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+
+        if (event.results[i].isFinal) {
+          finalTranscript += transcript;
+        } else {
+          interimTranscript += transcript;
+        }
+      }
+
+      messageInput.value = finalTranscript + interimTranscript;
+      messageInput.scrollLeft = messageInput.scrollWidth;
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      micIcon.classList.remove("listening");
+    };
+
+    recognition.onend = () => {
+      micIcon.classList.remove("listening");
+      messageInput.focus();
+    };
+  } else {
+    alert("Your browser does not support Speech Recognition.");
+  } {% endcomment %}
+
+
+
+  const micIcon = document.getElementById("mic-icon");
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (SpeechRecognition) {
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+
+    const wakeRecognition = new SpeechRecognition();
+    wakeRecognition.continuous = true;
+    wakeRecognition.interimResults = false;
+    wakeRecognition.lang = "en-US";
+
+    let finalTranscript = "";
+
+    // 🟢 Wake word detection
+    wakeRecognition.onresult = function (event) {
+      const transcript = event.results[event.resultIndex][0].transcript.trim().toLowerCase();
+      console.log("Wake heard:", transcript);
+      if (transcript.includes("hey nova")) {
+        wakeRecognition.stop(); // stop wake listener
+        startListening(); // start main speech
+      }
+    };
+
+    wakeRecognition.onend = () => {
+      // restart wake detection if not actively recognizing
+      if (!micIcon.classList.contains("listening")) {
+        try { wakeRecognition.start(); } catch (e) {}
+      }
+    };
+
+    wakeRecognition.onerror = (e) => {
+      console.warn("Wake error:", e.error);
+    };
+
+    // 🟢 Mic click
+    micIcon.addEventListener("click", () => {
+      wakeRecognition.stop(); // prevent overlap
+      startListening();
+    });
+
+    // 🎤 Start recognition
+    function startListening() {
+      finalTranscript = "";
+      micIcon.classList.add("listening");
+      recognition.start();
+    }
+
+    // ✍️ Live update
+    recognition.onresult = (event) => {
+      let interim = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const text = event.results[i][0].transcript;
+        if (event.results[i].isFinal) finalTranscript += text;
+        else interim += text;
+      }
+      messageInput.value = finalTranscript + interim;
+      messageInput.scrollLeft = messageInput.scrollWidth;
+    };
+
+    recognition.onerror = (e) => {
+      console.error("Speech error:", e.error);
+      micIcon.classList.remove("listening");
+    };
+
+    recognition.onend = () => {
+      micIcon.classList.remove("listening");
+      messageInput.focus();
+      try { wakeRecognition.start(); } catch (e) {}
+    };
+
+    // 🔄 Start wake listener on load
+    window.addEventListener("load", () => {
+      try { wakeRecognition.start(); } catch (e) {}
+    });
+  } else {
+    alert("Speech recognition not supported in this browser.");
+  }
+</script>
+{% endblock %}
