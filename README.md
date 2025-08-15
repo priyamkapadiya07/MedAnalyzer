@@ -67,18 +67,7 @@ source myenv/bin/activate
 
 ### 3. Install Dependencies
 ```bash
-pip install django==5.1.7
-pip install pytesseract
-pip install Pillow
-pip install scikit-learn
-pip install joblib
-pip install PyMuPDF
-pip install pdf2image
-pip install xhtml2pdf
-pip install python-decouple
-pip install python-dotenv
-pip install google-generativeai
-pip install django-markdownify
+pip install -r requirements.txt
 ```
 
 ### 4. Install Tesseract OCR
