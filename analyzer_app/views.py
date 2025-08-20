@@ -87,38 +87,6 @@ def login_view(request):
         form = WebsiteUserLoginForm()
     return render(request, 'login.html', {'form': form})
 
-
-
-# 🔐 Sign Up View
-# def signup(request):
-#     if request.method == 'POST':
-#         form = SignUpForm(request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             login(request, user)    
-#             return redirect('home')
-#     else:
-#         form = SignUpForm()
-#     return render(request, 'signup.html', {'form': form})
-
-# # 🔐 Login View (optional override, uses Django built-in form)
-# def login_view(request):
-#     if request.method == 'POST':
-#         form = AuthenticationForm(data=request.POST)
-#         if form.is_valid():
-#             user = form.get_user()
-#             login(request, user)
-#             return redirect('home')
-#     else:
-#         form = AuthenticationForm()
-#     return render(request, 'login.html', {'form': form})
-
-
-# def logout_view(request):
-#     logout(request)
-#     return redirect('login')
-
-
 def logout_view(request):
     request.session.flush()
     return redirect('login')
@@ -199,7 +167,7 @@ def report_detail(request, report_id):
     "MCV": "fL",
     "ESR": "mm/hr",
     }
-
+    
     return render(request, 'report_detail.html', {'report': report,'test_units': test_units,'username':request.session.get('username'),'email':request.session.get('email')})
 
 @custom_login_required
@@ -246,7 +214,7 @@ def handle_report(request, report_id, action):
         )
         email.attach(f"report_{report.id}.pdf", pdf_data, "application/pdf")
         email.send()
-        return render(request, 'email_success.html', {'email': target_email})
+        return render(request, 'email_success.html', {'email': target_email}, {'username':request.session.get('username'),'email':request.session.get('email')})
 
     return HttpResponse("Invalid action.")
 

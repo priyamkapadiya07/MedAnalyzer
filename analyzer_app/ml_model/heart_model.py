@@ -1,30 +1,24 @@
 # heart_model.py
 
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import joblib
 
-# Load dataset from CSV
-df = pd.read_csv("heart_dataset.csv")  # Make sure this file is in the same folder
+df = pd.read_csv("heart_dataset.csv")
 
-# Features and target
 X = df[['Cholesterol']]
 y = df['Outcome']
 
-# Split data (optional, for accuracy check)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# Train model
-model = LogisticRegression()
+model = DecisionTreeClassifier(max_depth=2, random_state=42)
 model.fit(X_train, y_train)
 
-# Evaluate
 y_pred = model.predict(X_test)
 acc = accuracy_score(y_test, y_pred)
-print(f"Anemia Model Accuracy: {acc * 100:.2f}%")
+print(f"Heart Model Accuracy: {acc * 100:.2f}%")
 
-# Save model
 joblib.dump(model, "heart_model.pkl")
 print("Heart model trained and saved.")
