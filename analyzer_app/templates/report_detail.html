@@ -23,6 +23,14 @@
       </ul>
     </div>
 
+    {% if graph %}
+    <div class="report-section">
+      <h2>📈 Report Visualization</h2>
+      <img src="data:image/png;base64,{{ graph }}" class="img-fluid" alt="Report Graph" />
+    </div>
+    {% endif %}
+
+
     <div class="report-section">
       <h2>🧬 Disease Prediction</h2>
       <ul>

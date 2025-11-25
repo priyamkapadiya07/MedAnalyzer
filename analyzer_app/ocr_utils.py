@@ -5,11 +5,11 @@ import joblib
 from difflib import SequenceMatcher
 import numpy as np
 import os
-import fitz  # PyMuPDF
+import fitz
 from pdf2image import convert_from_path
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-# Load models
+
 diabetes_model = joblib.load("analyzer_app/ml_model/diabetes_model.pkl")
 anemia_model = joblib.load("analyzer_app/ml_model/anemia_model.pkl")
 heart_model = joblib.load("analyzer_app/ml_model/heart_model.pkl")
@@ -22,7 +22,7 @@ def extract_text_from_image(image_path):
         print(f"❌ Image OCR failed: {e}")
         return ""
 
-# ✅ Extract text from PDF (with OCR fallback)
+# Extract text from PDF (with OCR fallback)
 def extract_text_from_pdf(pdf_path):
     try:
         doc = fitz.open(pdf_path)
@@ -32,7 +32,6 @@ def extract_text_from_pdf(pdf_path):
             page = doc.load_page(page_num)
             text = page.get_text().strip()
             if not text:
-                # OCR fallback for scanned PDFs
                 images = convert_from_path(pdf_path, first_page=page_num+1, last_page=page_num+1)
                 text = pytesseract.image_to_string(images[0])
             full_text += text + "\n"
@@ -42,7 +41,6 @@ def extract_text_from_pdf(pdf_path):
         print(f"❌ PDF text extraction failed: {e}")
         return ""
 
-# ✅ Clean and parse text into dictionary format
 def parse_to_dict(text):
     result = {}
     lines = text.splitlines()
@@ -58,7 +56,6 @@ def parse_to_dict(text):
                 result[test_name] = value
     return result
 
-# ✅ Detect file type and process
 def extract_report_data(file_path):
     ext = os.path.splitext(file_path)[1].lower()
     if ext in [".pdf"]:
@@ -73,27 +70,47 @@ def extract_report_data(file_path):
 def predict_diseases(data):
     results = {}
     
-    # Glucose: 13.5 – 17.5 g/dL (males) , 12.0 – 15.5 g/dL (females)
-    if data.get("Glucose"):
-        results["Diabetes"] = "Yes" if diabetes_model.predict([[data["Glucose"]]])[0] == 1 else "No"
+    # # Glucose: 13.5 – 17.5 g/dL (males) , 12.0 – 15.5 g/dL (females)
+    # if data.get("Glucose"):
+    #     results["Diabetes"] = "Yes" if diabetes_model.predict([[data["Glucose"]]])[0] == 1 else "No"
         
-    # Hemoglobin: 70 – 99 mg/dL (fasting)
+    # # Hemoglobin: 70 – 99 mg/dL (fasting)
+    # if data.get("Hemoglobin"):
+    #     results["Anemia"] = "Yes" if anemia_model.predict([[data["Hemoglobin"]]])[0] == 1 else "No"
+        
+    # # Cholesterol: < 200 mg/dL (desirable)
+    # if data.get("Cholesterol"):
+    #     results["Heart Disease"] = "Yes" if heart_model.predict([[data["Cholesterol"]]])[0] == 1 else "No"
+
+    # Hemoglobin: 12 – 16 g/dL (Normal)
     if data.get("Hemoglobin"):
-        results["Anemia"] = "Yes" if anemia_model.predict([[data["Hemoglobin"]]])[0] == 1 else "No"
-        
-    # Cholesterol: < 200 mg/dL (desirable)
+        hb = float(data["Hemoglobin"])
+        if hb < 12:
+            results["Anemia"] = "Yes"
+        elif hb > 16:
+            results["Polycythemia"] = "Yes"
+        else:
+            results["Hemoglobin Status"] = "Normal"
+
+    # Glucose: 70 – 110 mg/dL (Fasting Normal)
+    if data.get("Glucose"):
+        glucose = float(data["Glucose"])
+        if glucose < 70:
+            results["Hypoglycemia"] = "Yes"
+        elif glucose > 110:
+            results["Diabetes"] = "Yes"
+        else:
+            results["Glucose Status"] = "Normal"
+
+    # Cholesterol: 125 – 200 mg/dL (Normal)
     if data.get("Cholesterol"):
-        results["Heart Disease"] = "Yes" if heart_model.predict([[data["Cholesterol"]]])[0] == 1 else "No"
-        
-        
-    # if data.get("WBC") and data["WBC"] > 11000.0:
-    #     results["Infection"] = "Yes"
-    # if data.get("PLT") and data["PLT"] < 150000:
-    #     results["Thrombocytopenia"] = "Yes"
-    # if data.get("MCV") and data["MCV"] < 80:
-    #     results["Microcytic Anemia"] = "Yes"
-    # if data.get("ESR") and data["ESR"] > 20:
-    #     results["Inflammation"] = "Yes"
+        chol = float(data["Cholesterol"])
+        if chol < 125:
+            results["Low Cholesterol"] = "Yes"
+        elif chol > 200:
+            results["Heart Disease Risk"] = "Yes"
+        else:
+            results["Cholesterol Status"] = "Normal"
 
     
     # WBC: 4,000 – 11,000 /µL
@@ -142,11 +159,23 @@ def suggest_medicines(diseases):
         "Diabetes": [
             "Metformin", "Insulin", "Glipizide", "Dapagliflozin", "Sitagliptin"
         ],
+        "Hypoglycemia": [
+            "Glucose tablets", "Dextrose IV", "Glucagon injection", "Fruit juice", "Candy"
+        ],
         "Anemia": [
             "Iron supplements", "Folic acid", "Vitamin B12", "Erythropoietin"
         ],
+        "Polycythemia": [
+            "Hydroxyurea", "Aspirin (low-dose)", "Phlebotomy", "Interferon-alpha"
+        ],
         "Heart Disease": [
             "Statins", "Beta blockers", "ACE inhibitors", "Aspirin", "Nitroglycerin"
+        ],
+        "Heart Disease Risk": [
+            "Lifestyle changes (diet, exercise)", "Statins", "Ezetimibe", "Fibrates"
+        ],
+        "Low Cholesterol": [
+            "Balanced diet with healthy fats", "Niacin", "Omega-3 supplements"
         ],
         "Infection": [
             "Amoxicillin", "Azithromycin", "Ceftriaxone", "Ibuprofen", "Paracetamol"

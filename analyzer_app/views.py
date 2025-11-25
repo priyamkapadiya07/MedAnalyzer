@@ -20,6 +20,12 @@ from django.views.decorators.csrf import csrf_exempt
 import os
 import google.generativeai as genai 
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
+import io
+import base64
+import matplotlib
+matplotlib.use("Agg") 
+import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
 
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") 
@@ -167,8 +173,73 @@ def report_detail(request, report_id):
     "MCV": "fL",
     "ESR": "mm/hr",
     }
+    normal_ranges = {
+        "Hemoglobin": (12, 16),
+        "Glucose": (70, 110),
+        "Cholesterol": (125, 200),
+        "WBC": (4000, 11000),
+        "PLT": (150000, 450000),
+        "MCV": (80, 100),
+        "ESR": (0, 20),
+    }
+
+    labels, values, colors = [], [], []
+
+    for key, value in report.extracted_data.items():
+        try:
+            val = float(value)
+            low, high = normal_ranges.get(key, (None, None))
+            status = "normal"
+
+            if low is not None and high is not None:
+                if val < low:
+                    status = "low"
+                elif val > high:
+                    status = "high"
+
+            # Assign colors
+            if status == "high":
+                color = "red"
+            elif status == "low":
+                color = "orange"
+            else:
+                color = "green"
+
+            labels.append(key)
+            values.append(val)
+            colors.append(color)
+
+        except:
+            continue
+
+    # Only plot if there is data
+    img_base64 = None
+    if labels:
+        fig, ax = plt.subplots(figsize=(8, 4))
+        ax.bar(labels, values, color=colors)
+        ax.set_yscale("log")
+        ax.set_ylabel("Values")
+        ax.set_title("Extracted Report Visualization")
+        ax.tick_params(axis='x', rotation=45)
+
+        # Legend
+        legend_elements = [
+            Patch(facecolor="green", label="Normal"),
+            Patch(facecolor="red", label="High"),
+            Patch(facecolor="orange", label="Low"),
+        ]
+        ax.legend(handles=legend_elements, loc="upper right")
+
+        # Save to buffer
+        buf = io.BytesIO()
+        plt.tight_layout()
+        plt.savefig(buf, format="png")
+        buf.seek(0)
+        img_base64 = base64.b64encode(buf.read()).decode("utf-8")
+        buf.close()
+        plt.close(fig)
     
-    return render(request, 'report_detail.html', {'report': report,'test_units': test_units,'username':request.session.get('username'),'email':request.session.get('email')})
+    return render(request, 'report_detail.html', {'report': report,'test_units': test_units,"graph": img_base64,'username':request.session.get('username'),'email':request.session.get('email')})
 
 @custom_login_required
 def report_history(request):
